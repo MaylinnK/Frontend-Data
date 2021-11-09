@@ -1,0 +1,53 @@
+svg {
+    height: 250px;
+}
+
+rect {
+    fill: blue;
+    transition: 3s;
+}
+
+rect:hover {
+    fill: red;
+    transition: 3s;
+}
+
+circle {
+    cy: 100px;
+    cx: 100px;
+    r: 100px;
+    fill: green;
+    transition: 500ms
+}
+
+circle:hover {
+    r: 80px;
+    transition: 500ms
+}
+
+svg path {
+    transition: 1s;
+}
+
+main>svg path:hover{
+    transition: 1s;
+    d: path("M 10,30 A 20,20 0,0,1 50,30 A 20,20 0,0,1 90,30 Q 90,60 50,80 Q 10,60 10,30 z")
+}
+
+article>svg {
+    width: 100%;
+    height: 1500px;
+}
+
+article>svg path:nth-of-type(2n) {
+    fill: darkgoldenrod;
+}
+ 
+article>svg path:nth-of-type(2n+1) {
+    fill: darkgreen;
+}
+
+article>svg path:hover {
+    transition: 200ms;
+    fill: darkred;
+}
