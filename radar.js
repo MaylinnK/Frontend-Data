@@ -1,33 +1,63 @@
+
 var width = 300,
-  height = 300;
+height = 300;
 
 // Config for the Radar chart
 var config = {
-  w: width,
-  h: height,
-  maxValue: 100,
-  levels: 5,
-  ExtraWidthX: 300,
+w: width,
+h: height,
+maxValue: 100,
+levels: 5,
+ExtraWidthX: 300,
 };
+d3.json("https://pokeapi.co/api/v2/berry/").then((json) => {
+  data = json;
+
+  getUrls([], [], data.results);
+});
+
+function getUrls(berries, urls, data) {
+  // Haalt alle berries op bij nummer.
+  berries = Object.keys(data);
+  // console.log(data)
+  // Haalt per berry de url naar detail pagina op.
+  berries.map(function (berry) {
+    urls.push(data[berry].url);
+  });
+  // Geeft urls mee aan getBerryData en roept hem aan.
+  allData(urls);
+}
+
+function allData(new_data) {
+  let array = [];
+  //update the scales
+  new_data.map(function (url) {
+    array.push(
+      d3.json(url).then((json) => {
+        data = json;
+        return data;
+      })
+    );
+  });
+  Promise.all(array).then((allData) => {
+    data = allData
+    RadarChart.draw("#chart", data, config);
+  });
+}
+
+// // Call function to draw the Radar chart
+// d3.json("data.json").then (function (data) {
+// RadarChart.draw("#chart", data, config);
+// });
+
 
 var svg = d3
-  .select("body")
-  .selectAll("svg")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height);
+.select("body")
+.selectAll("svg")
+.append("svg")
+.attr("width", width)
+.attr("height", height);
 
-
-var data = [
-  [
-    { area: "Central ", value: 80 },
-    { area: "Kirkdale", value: 40 },
-    { area: "Kensington ", value: 40 },
-    { area: "Everton ", value: 90 },
-    { area: "Picton ", value: 60 },
-    { area: "Riverside ", value: 80 },
-  ],
-];
 
 var RadarChart = {
   draw: function (id, d, options) {
@@ -56,12 +86,19 @@ var RadarChart = {
         }
       }
     }
+    
+    // console.log(data.map(berry =>{
+    //     berry.flavors.map(flavor => {
+    //        flavor.potency
+    //     })
+    // }))
 
     cfg.maxValue = 100;
-
-    var allAxis = d[0].map(function (i, j) {
-      return i.area;
-    });
+    allAxis = []
+    allAxis.push(d[0].flavors.map(i => {
+        console.log(i.flavor.name)
+    }))
+    console.log(allAxis)
     var total = allAxis.length;
     var radius = cfg.factor * Math.min(cfg.w / 2, cfg.h / 2);
     var Format = d3.format("%");
@@ -318,8 +355,3 @@ var RadarChart = {
     });
   },
 };
-
-
-//Call function to draw the Radar chart
-RadarChart.draw("#chart", data, config);
-
