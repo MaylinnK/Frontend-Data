@@ -1,34 +1,4 @@
-var width = 300,
-  height = 300;
-
-// Config for the Radar chart
-var config = {
-  w: width,
-  h: height,
-  maxValue: 100,
-  levels: 5,
-  ExtraWidthX: 300,
-};
-
-var svg = d3
-  .select("body")
-  .selectAll("svg")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height);
-
-
-var data = [
-  [
-    { area: "Central ", value: 80 },
-    { area: "Kirkdale", value: 40 },
-    { area: "Kensington ", value: 40 },
-    { area: "Everton ", value: 90 },
-    { area: "Picton ", value: 60 },
-    { area: "Riverside ", value: 80 },
-  ],
-];
-
+// Maakt eigenschappen van de radarchart aan
 var RadarChart = {
   draw: function (id, d, options) {
     var cfg = {
@@ -49,6 +19,7 @@ var RadarChart = {
       color: d3.scaleOrdinal().range(["#6F257F", "#CA0D59"]),
     };
 
+    // Maakt waardes in cfg gelijk aan waardes in options
     if ("undefined" !== typeof options) {
       for (var i in options) {
         if ("undefined" !== typeof options[i]) {
@@ -59,6 +30,7 @@ var RadarChart = {
 
     cfg.maxValue = 100;
 
+    // Geeft namen op de chart mee
     var allAxis = d[0].map(function (i, j) {
       return i.area;
     });
@@ -67,6 +39,7 @@ var RadarChart = {
     var Format = d3.format("%");
     d3.select(id).select("svg").remove();
 
+    // Geeft hoogte en breedte mee aan de chart
     var g = d3
       .select(id)
       .append("svg")
@@ -80,13 +53,14 @@ var RadarChart = {
 
     var tooltip;
 
-    //Circular segments
+    // Maakt de zeshoeken aan en positioneert ze in elkaar
     for (var j = 0; j < cfg.levels; j++) {
       var levelFactor = cfg.factor * radius * ((j + 1) / cfg.levels);
       g.selectAll(".levels")
         .data(allAxis)
         .enter()
         .append("svg:line")
+        // maakt 1 voor 1 de lijnen van de zeshoeken aan
         .attr("x1", function (d, i) {
           return (
             levelFactor * (1 - cfg.factor * Math.sin((i * cfg.radians) / total))
@@ -113,6 +87,7 @@ var RadarChart = {
         .style("stroke", "grey")
         .style("stroke-opacity", "0.75")
         .style("stroke-width", "0.3px")
+        // positioneert de lijnen als zeshoeken
         .attr(
           "transform",
           "translate(" +
@@ -123,7 +98,7 @@ var RadarChart = {
         );
     }
 
-    //Text indicating at what % each level is
+    // Nummers op de chart
     for (var j = 0; j < cfg.levels; j++) {
       var levelFactor = cfg.factor * radius * ((j + 1) / cfg.levels);
       g.selectAll(".levels")
@@ -160,6 +135,7 @@ var RadarChart = {
       .append("g")
       .attr("class", "axis");
 
+    // Maakt de axis lijnen aan
     axis
       .append("line")
       .attr("x1", cfg.w / 2)
@@ -178,6 +154,7 @@ var RadarChart = {
       .style("stroke", "grey")
       .style("stroke-width", "1px");
 
+    // Voegt de tekst toe aan de chart met styling
     axis
       .append("text")
       .attr("class", "legend")
@@ -191,6 +168,7 @@ var RadarChart = {
       .attr("transform", function (d, i) {
         return "translate(0, -10)";
       })
+      // Magie die de namen in de juiste positie zet.
       .attr("x", function (d, i) {
         return (
           (cfg.w / 2) *
@@ -207,7 +185,8 @@ var RadarChart = {
 
     d.forEach(function (y, x) {
       dataValues = [];
-      g.selectAll(".nodes").data(y, function (j, i) {
+      g.selectAll(".nodes")
+      .data(y, function (j, i) {
         dataValues.push([
           (cfg.w / 2) *
             (1 -
@@ -319,7 +298,26 @@ var RadarChart = {
   },
 };
 
+var width = 300,
+  height = 300;
+
+// Config for the Radar chart
+var config = {
+  w: width,
+  h: height,
+  maxValue: 100,
+  levels: 5,
+  ExtraWidthX: 300,
+};
 
 //Call function to draw the Radar chart
-RadarChart.draw("#chart", data, config);
+d3.json("data.json").then((data) => {
+  RadarChart.draw("#chart", data, config);
+});
 
+var svg = d3
+  .select("body")
+  .selectAll("svg")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);

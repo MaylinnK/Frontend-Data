@@ -1,14 +1,13 @@
-
 var width = 300,
-height = 300;
+  height = 300;
 
 // Config for the Radar chart
 var config = {
-w: width,
-h: height,
-maxValue: 100,
-levels: 5,
-ExtraWidthX: 300,
+  w: width,
+  h: height,
+  maxValue: 25,
+  levels: 5,
+  ExtraWidthX: 300,
 };
 d3.json("https://pokeapi.co/api/v2/berry/").then((json) => {
   data = json;
@@ -40,24 +39,48 @@ function allData(new_data) {
     );
   });
   Promise.all(array).then((allData) => {
-    data = allData
-    RadarChart.draw("#chart", data, config);
+    data = allData;
+    addButton(data);
+    // RadarChart.draw("#chart", data, config);
   });
 }
 
-// // Call function to draw the Radar chart
-// d3.json("data.json").then (function (data) {
-// RadarChart.draw("#chart", data, config);
-// });
+// Voegt een label en button toe voor elke berry berry
+function addButton(data) {
+  console.log(data);
+  data.map((berry) => {
+    const radioButton = document.createElement("input");
+    radioButton.type = "radio";
+    radioButton.name = "berry";
+    radioButton.id = berry.id - 1;
+    radioButton.value = berry.name;
 
+    const label = document.createElement("label");
+    label.htmlFor = berry.id - 1;
+
+    const description = document.createTextNode(berry.name);
+    label.appendChild(description);
+
+    const img = document.createElement("img");
+    img.src = "./afbeeldingen/" + berry.name + ".png";
+
+    const svg = document.createElement("svg");
+
+
+    const parent = document.querySelector("nav");
+    parent.appendChild(radioButton);
+    parent.appendChild(label);
+    label.appendChild(img);
+  });
+  // document.querySelectorAll('radio').addEventListener("click", RadarChart);
+}
 
 var svg = d3
-.select("body")
-.selectAll("svg")
-.append("svg")
-.attr("width", width)
-.attr("height", height);
-
+  .select("body")
+  .selectAll("svg")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
 
 var RadarChart = {
   draw: function (id, d, options) {
@@ -86,19 +109,9 @@ var RadarChart = {
         }
       }
     }
-    
-    // console.log(data.map(berry =>{
-    //     berry.flavors.map(flavor => {
-    //        flavor.potency
-    //     })
-    // }))
 
-    cfg.maxValue = 100;
-    allAxis = []
-    allAxis.push(d[0].flavors.map(i => {
-        console.log(i.flavor.name)
-    }))
-    console.log(allAxis)
+    cfg.maxValue = 25;
+    allAxis = ["spicy", "dry", "sweet", "bitter", "sour"];
     var total = allAxis.length;
     var radius = cfg.factor * Math.min(cfg.w / 2, cfg.h / 2);
     var Format = d3.format("%");
@@ -160,33 +173,33 @@ var RadarChart = {
         );
     }
 
-    //Text indicating at what % each level is
-    for (var j = 0; j < cfg.levels; j++) {
-      var levelFactor = cfg.factor * radius * ((j + 1) / cfg.levels);
-      g.selectAll(".levels")
-        .data([1]) //dummy data
-        .enter()
-        .append("svg:text")
-        .attr("x", function (d) {
-          return levelFactor * (1 - cfg.factor * Math.sin(0));
-        })
-        .attr("y", function (d) {
-          return levelFactor * (1 - cfg.factor * Math.cos(0));
-        })
-        .attr("class", "legend")
-        .style("font-family", "sans-serif")
-        .style("font-size", "10px")
-        .attr(
-          "transform",
-          "translate(" +
-            (cfg.w / 2 - levelFactor + cfg.ToRight) +
-            ", " +
-            (cfg.h / 2 - levelFactor) +
-            ")"
-        )
-        .attr("fill", "#737373")
-        .text(((j + 1) * 100) / cfg.levels);
-    }
+    // //Text indicating at what % each level is
+    // for (var j = 0; j < cfg.levels; j++) {
+    //   var levelFactor = cfg.factor * radius * ((j + 1) / cfg.levels);
+    //   g.selectAll(".levels")
+    //     .data([1]) //dummy data
+    //     .enter()
+    //     .append("svg:text")
+    //     .attr("x", function (d) {
+    //       return levelFactor * (1 - cfg.factor * Math.sin(0));
+    //     })
+    //     .attr("y", function (d) {
+    //       return levelFactor * (1 - cfg.factor * Math.cos(0));
+    //     })
+    //     .attr("class", "legend")
+    //     .style("font-family", "sans-serif")
+    //     .style("font-size", "10px")
+    //     .attr(
+    //       "transform",
+    //       "translate(" +
+    //         (cfg.w / 2 - levelFactor + cfg.ToRight) +
+    //         ", " +
+    //         (cfg.h / 2 - levelFactor) +
+    //         ")"
+    //     )
+    //     .attr("fill", "#737373")
+    //     .text(((j + 1) * 100) / cfg.levels);
+    // }
 
     series = 0;
 
@@ -242,53 +255,68 @@ var RadarChart = {
         );
       });
 
-    d.forEach(function (y, x) {
-      dataValues = [];
-      g.selectAll(".nodes").data(y, function (j, i) {
+    // d[berry].flavors[0].potency,
+    // d[berry].flavors[1].potency,
+    // d[berry].flavors[2].potency,
+    // d[berry].flavors[3].potency,
+    // d[berry].flavors[4].potency
+    const berry = 1; // document.querySelector('radio').value;
+    dataValues = [];
+    d.map(function (berry) {
+      console.log(berry.name);
+    });
+    d[berry].flavors.forEach(function (y, x) {
+      g.selectAll(".nodes");
+      console.log("Hey").data(y, (j, i) => {
+        console.log("hey");
         dataValues.push([
           (cfg.w / 2) *
             (1 -
-              (parseFloat(Math.max(j.value, 0)) / cfg.maxValue) *
+              (parseFloat(Math.max(j.potency, 0)) / cfg.maxValue) *
                 cfg.factor *
                 Math.sin((i * cfg.radians) / total)),
           (cfg.h / 2) *
             (1 -
-              (parseFloat(Math.max(j.value, 0)) / cfg.maxValue) *
+              (parseFloat(Math.max(j.potency, 0)) / cfg.maxValue) *
                 cfg.factor *
                 Math.cos((i * cfg.radians) / total)),
         ]);
       });
       dataValues.push(dataValues[0]);
-      g.selectAll(".area")
-        .data([dataValues])
-        .enter()
-        .append("polygon")
-        .attr("class", "radar-chart-serie" + series)
-        .style("stroke-width", "2px")
-        .style("stroke", cfg.color(series))
-        .attr("points", function (d) {
-          var str = "";
-          for (var pti = 0; pti < d.length; pti++) {
-            str = str + d[pti][0] + "," + d[pti][1] + " ";
-          }
-          return str;
-        })
-        .style("fill", function (j, i) {
-          return cfg.color(series);
-        })
-        .style("fill-opacity", cfg.opacityArea)
-        .on("mouseover", function (d) {
-          z = "polygon." + d3.select(this).attr("class");
-          g.selectAll("polygon").transition(200).style("fill-opacity", 0.1);
-          g.selectAll(z).transition(200).style("fill-opacity", 0.7);
-        })
-        .on("mouseout", function () {
-          g.selectAll("polygon")
-            .transition(200)
-            .style("fill-opacity", cfg.opacityArea);
-        });
-      series++;
+      // console.log(dataValues);
     });
+
+    g.selectAll(".area")
+      .data([dataValues])
+      .enter()
+      .append("polygon")
+      .attr("class", "radar-chart-serie" + series)
+      .style("stroke-width", "2px")
+      .style("stroke", cfg.color(series))
+      .attr("points", function (d) {
+        var str = "";
+        for (var pti = 0; pti < d.length; pti++) {
+          str = str + d[pti] + "," + d[pti] + " ";
+        }
+        // console.log(str)
+        return str;
+      })
+      .style("fill", function (j, i) {
+        return cfg.color(series);
+      })
+      .style("fill-opacity", cfg.opacityArea)
+      .on("mouseover", function (d) {
+        z = "polygon." + d3.select(this).attr("class");
+        g.selectAll("polygon").transition(200).style("fill-opacity", 0.1);
+        g.selectAll(z).transition(200).style("fill-opacity", 0.7);
+      })
+      .on("mouseout", function () {
+        g.selectAll("polygon")
+          .transition(200)
+          .style("fill-opacity", cfg.opacityArea);
+      });
+    series++;
+
     series = 0;
 
     var tooltip = d3.select("body").append("div").attr("class", "toolTip");
