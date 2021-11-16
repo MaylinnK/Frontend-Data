@@ -254,11 +254,6 @@ var RadarChart = {
         );
       });
 
-    // d[berry].flavors[0].potency,
-    // d[berry].flavors[1].potency,
-    // d[berry].flavors[2].potency,
-    // d[berry].flavors[3].potency,
-    // d[berry].flavors[4].potency
     const berry = 1; // document.querySelector('radio').value;
     dataValues = [];
 
