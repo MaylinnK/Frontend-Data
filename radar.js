@@ -47,7 +47,6 @@ function allData(new_data) {
 
 // Voegt een label en button toe voor elke berry berry
 function addButton(data) {
-  console.log(data);
   data.map((berry) => {
     const radioButton = document.createElement("input");
     radioButton.type = "radio";
@@ -262,13 +261,12 @@ var RadarChart = {
     // d[berry].flavors[4].potency
     const berry = 1; // document.querySelector('radio').value;
     dataValues = [];
-    d.map(function (berry) {
-      console.log(berry.name);
-    });
-    d[berry].flavors.forEach(function (y, x) {
-      g.selectAll(".nodes");
-      console.log("Hey").data(y, (j, i) => {
-        console.log("hey");
+
+    potencyData = []
+    potencyData.push(d[berry].flavors)
+    potencyData.forEach(function (y, x) {
+      g.selectAll(".nodes")
+      .data(y, (j, i) => {
         dataValues.push([
           (cfg.w / 2) *
             (1 -
@@ -282,10 +280,8 @@ var RadarChart = {
                 Math.cos((i * cfg.radians) / total)),
         ]);
       });
-      dataValues.push(dataValues[0]);
-      // console.log(dataValues);
     });
-
+console.log(dataValues)
     g.selectAll(".area")
       .data([dataValues])
       .enter()

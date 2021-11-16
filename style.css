@@ -1,4 +1,5 @@
 body {
+    position: relative;
     display: flex;
     margin: 0;
     background-image: url(./afbeeldingen/background.svg);
@@ -34,7 +35,7 @@ nav input {
 }
 
 nav label {
-    width: 150px;
+    width: 73%;
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
@@ -42,6 +43,8 @@ nav label {
     background-image: url(./afbeeldingen/label.svg);
     background-repeat: no-repeat;
     background-size: cover;
+    transition: ease-in-out;
+    color: #999999;
 }
 
 nav input:checked + label {
@@ -69,6 +72,7 @@ main {
 
 #chart {
     position: absolute;
+    z-index: 1;
     top: 50px;
     left: 100px;
 }
