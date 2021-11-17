@@ -413,6 +413,7 @@ var RadarChart = {
 
     function textData(berry) {
       berry = document.querySelector('input[type="radio"]:checked').id;
+      document.querySelector('h1').innerHTML = d[berry].name
       document.getElementById("firmness").innerHTML = d[berry].firmness.name
       document.getElementById("growth").innerHTML = d[berry].growth_time
       document.getElementById("harvest").innerHTML = d[berry].max_harvest
