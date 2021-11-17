@@ -235,6 +235,7 @@ var RadarChart = {
 
     var tooltip = d3.select("body").append("div").attr("class", "toolTip");
     d.forEach(function (y, x) {
+      console.log(y)
       g.selectAll(".nodes")
         .data(y)
         .enter()
@@ -282,7 +283,6 @@ var RadarChart = {
         .style("stroke", cfg.color(series))
         .style("fill-opacity", 0.9)
         .on("mouseover", function (d) {
-          console.log(d.area);
           tooltip
             .style("left", d3.event.pageX - 40 + "px")
             .style("top", d3.event.pageY - 80 + "px")
