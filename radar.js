@@ -36,7 +36,7 @@ function allData(new_data) {
 
 // Voegt een label en button toe voor elke berry berry
 function addButton(data, buttons) {
-  console.log(data)
+  console.log(data);
   data.map((berry) => {
     const radioButton = document.createElement("input");
     radioButton.type = "radio";
@@ -171,7 +171,7 @@ var RadarChart = {
       TranslateY: 30,
       ExtraWidthX: 165,
       ExtraWidthY: 70,
-      color: d3.scaleOrdinal().range(["#87de16", "#CA0D59"]),
+      color: d3.scaleOrdinal().range(["#87de16"]),
     };
 
     if ("undefined" !== typeof options) {
@@ -198,6 +198,8 @@ var RadarChart = {
         "transform",
         "translate(" + cfg.TranslateX + "," + cfg.TranslateY + ")"
       );
+
+      g.append("g").attr("id", "poly");
 
     //Circular segments
     for (var j = 0; j < cfg.levels; j++) {
@@ -298,6 +300,7 @@ var RadarChart = {
       });
 
     function loadData(berry, tooltip) {
+      d3.selectAll(".poly").remove();
       berry = document.querySelector('input[type="radio"]:checked').id;
       dataValues = [];
       potencyData = [];
@@ -321,32 +324,44 @@ var RadarChart = {
 
       g.selectAll(".area")
         .data([dataValues])
-        .enter()
-        .append("polygon")
-        .attr("class", "radar-chart-serie" + series)
-        .style("stroke-width", "1.5px")
-        .style("stroke", cfg.color(series))
-        .attr("points", function (d) {
-          var str = "";
-          for (var pti = 0; pti < d.length; pti++) {
-            str = str + d[pti] + "," + d[pti] + " ";
+        .join(
+          function (enter) {
+            return enter
+              .append("polygon")
+              .attr("class", "radar-chart-serie" + series + " poly")
+              .style("stroke-width", "1.5px")
+              .style("stroke", cfg.color(series))
+              .attr("points", function (d) {
+                var str = "";
+                for (var pti = 0; pti < d.length; pti++) {
+                  str = str + d[pti] + "," + d[pti] + " ";
+                }
+                return str;
+              })
+              .style("fill", function (j, i) {
+                return cfg.color(series);
+              })
+              .style("fill-opacity", cfg.opacityArea)
+              .on("mouseover", function (d) {
+                z = "polygon." + d3.select(this).attr("class");
+                g.selectAll("polygon")
+                  .transition(200)
+                  .style("fill-opacity", 0.1);
+                g.selectAll(z).transition(200).style("fill-opacity", 0.7);
+              })
+              .on("mouseout", function () {
+                g.selectAll("polygon")
+                  .transition(200)
+                  .style("fill-opacity", cfg.opacityArea);
+              });
+          },
+          function(update) {
+            return update;
+          },
+          function(exit) {
+            return exit.remove();
           }
-          return str;
-        })
-        .style("fill", function (j, i) {
-          return cfg.color(series);
-        })
-        .style("fill-opacity", cfg.opacityArea)
-        .on("mouseover", function (d) {
-          z = "polygon." + d3.select(this).attr("class");
-          g.selectAll("polygon").transition(200).style("fill-opacity", 0.1);
-          g.selectAll(z).transition(200).style("fill-opacity", 0.7);
-        })
-        .on("mouseout", function () {
-          g.selectAll("polygon")
-            .transition(200)
-            .style("fill-opacity", cfg.opacityArea);
-        });
+        );
       series++;
 
       series = 0;
@@ -357,7 +372,7 @@ var RadarChart = {
           .data(y)
           .enter()
           .append("svg:circle")
-          .attr("class", "radar-chart-serie" + series)
+          .attr("class", "radar-chart-serie" + series + " poly")
           .attr("r", cfg.radius)
           .attr("alt", function (j) {
             return Math.max(j.value, 0);
@@ -413,13 +428,13 @@ var RadarChart = {
 
     function textData(berry) {
       berry = document.querySelector('input[type="radio"]:checked').id;
-      document.querySelector('h1').innerHTML = d[berry].name
-      document.getElementById("firmness").innerHTML = d[berry].firmness.name
-      document.getElementById("growth").innerHTML = d[berry].growth_time
-      document.getElementById("harvest").innerHTML = d[berry].max_harvest
-      document.getElementById("size").innerHTML = d[berry].size
-      document.getElementById("smoothness").innerHTML = d[berry].smoothness
-      document.getElementById("dryness").innerHTML = d[berry].soil_dryness
+      document.querySelector("h1").innerHTML = d[berry].name;
+      document.getElementById("firmness").innerHTML = d[berry].firmness.name;
+      document.getElementById("growth").innerHTML = d[berry].growth_time;
+      document.getElementById("harvest").innerHTML = d[berry].max_harvest;
+      document.getElementById("size").innerHTML = d[berry].size;
+      document.getElementById("smoothness").innerHTML = d[berry].smoothness;
+      document.getElementById("dryness").innerHTML = d[berry].soil_dryness;
     }
     const buttons = document.querySelectorAll("input");
     for (const button of buttons) {
