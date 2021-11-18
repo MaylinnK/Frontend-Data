@@ -10,17 +10,17 @@ I wrote this program for a school assignment. This assignment was to write a pro
 
 ## Installation
 1. Clone the repository.
-2. Navigate to 'api_opdracht'.
+2. Ignore D3-tutorial and svg-experimenten.
 3. Open live server.
-4. Gawk at berries in the console. (No, you can't eat them:anger:)
+4. Gawk at berries in the BerryDex
 
 ## Documentation
-See [the wiki](https://github.com/MaylinnK/Functional-Programming/wiki) for documentation.
+See [the wiki](https://github.com/MaylinnK/Frontend-Data/wiki) for documentation.
 
 ## To-do
-:clipboard: Get the data to show in the HTML.  
-:clipboard: Visualize the data.  
-:clipboard: Add more detailed data per berry.
+:clipboard: Add animations.  
+:clipboard: Make text data more readable.  
+:clipboard: Make radiobuttons more interactive.
 
 ## License
 Author: Maylinn Kwakman  
