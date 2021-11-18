@@ -39,7 +39,6 @@ var RadarChart = {
     var Format = d3.format("%");
     d3.select(id).select("svg").remove();
 
-    // Geeft hoogte en breedte mee aan de chart
     var g = d3
       .select(id)
       .append("svg")

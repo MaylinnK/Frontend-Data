@@ -7,7 +7,6 @@ d3.json("https://pokeapi.co/api/v2/berry/").then((json) => {
 function getUrls(berries, urls, data) {
   // Haalt alle berries op bij nummer.
   berries = Object.keys(data);
-  // console.log(data)
   // Haalt per berry de url naar detail pagina op.
   berries.map(function (berry) {
     urls.push(data[berry].url);
@@ -30,13 +29,11 @@ function allData(new_data) {
   Promise.all(array).then((allData) => {
     data = allData;
     addButton(data);
-    // RadarChart.draw("#chart", data);
   });
 }
 
-// Voegt een label en button toe voor elke berry berry
+// Voegt een label en button toe voor elke berry.
 function addButton(data, buttons) {
-  console.log(data);
   data.map((berry) => {
     const radioButton = document.createElement("input");
     radioButton.type = "radio";
@@ -60,103 +57,13 @@ function addButton(data, buttons) {
     parent.appendChild(label);
     label.appendChild(img);
   });
-  buttons = document.querySelectorAll("input");
   RadarChart.draw("#chart", data);
 }
-// function cfg(cfg) {
-//   cfg = {
-//     radius: 5,
-//     w: 300,
-//     h: 300,
-//     factor: 1,
-//     factorLegend: 0.85,
-//     levels: 5,
-//     maxValue: 25,
-//     radians: 2 * Math.PI,
-//     opacityArea: 0.3,
-//     ToRight: 5,
-//     TranslateX: 80,
-//     TranslateY: 30,
-//     ExtraWidthX: 200,
-//     ExtraWidthY: 100,
-//     color: d3.scaleOrdinal().range(["#87de16", "#CA0D59"]),
-//   };
-//   return cfg;
-// }
 
-// function drawAxis(id, g, allAxis, radius, levelFactor, total) {
-//   // debugger;
-//   allAxis = ["spicy", "dry", "sweet", "bitter", "sour"];
-//   radius = cfg().factor * Math.min(cfg().w / 2, cfg().h / 2);
-//   total = allAxis.length;
-//   id = "#charts";
-//   d3.select(id).select("svg").remove();
-//   g = d3
-//     .select(id)
-//     .append("svg")
-//     .attr("width", cfg().w + cfg().ExtraWidthX)
-//     .attr("height", cfg().h + cfg().ExtraWidthY)
-//     .append("g")
-//     .attr(
-//       "transform",
-//       "translate(" + cfg().TranslateX + "," + cfg().TranslateY + ")"
-//     );
-
-//   for (let j = 0; j < cfg().levels; j++) {
-//     levelFactor = cfg().factor * radius * ((j + 1) / cfg().levels);
-//     g.selectAll(".levels")
-//       .data(allAxis)
-//       .enter()
-//       .append("svg:line")
-//       .attr("x1", function (d, i) {
-//         return (
-//           levelFactor *
-//           (1 - cfg().factor * Math.sin((i * cfg().radians) / total))
-//         );
-//       })
-//       .attr("y1", function (d, i) {
-//         return (
-//           levelFactor *
-//           (1 - cfg().factor * Math.cos((i * cfg().radians) / total))
-//         );
-//       })
-//       .attr("x2", function (d, i) {
-//         return (
-//           levelFactor *
-//           (1 - cfg().factor * Math.sin(((i + 1) * cfg().radians) / total))
-//         );
-//       })
-//       .attr("y2", function (d, i) {
-//         return (
-//           levelFactor *
-//           (1 - cfg().factor * Math.cos(((i + 1) * cfg().radians) / total))
-//         );
-//       })
-//       .attr("class", "line")
-//       .style("stroke", "#5f8e0c")
-//       .style("stroke-opacity", "0.7")
-//       .style("stroke-width", "1.5px")
-//       .attr(
-//         "transform",
-//         "translate(" +
-//           (cfg().w / 2 - levelFactor) +
-//           ", " +
-//           (cfg().h / 2 - levelFactor) +
-//           ")"
-//       );
-//   }
-//   series = 0;
-// }
-// ----------------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------
-
-var RadarChart = {
+let RadarChart = {
   draw: function (id, d, options) {
-    var cfg = {
+    // Maakt een lijst van eigenschappen aan voor de chart om later gemakkelijk aanpassingen te maken.
+    let cfg = {
       radius: 5,
       w: 250,
       h: 250,
@@ -174,21 +81,13 @@ var RadarChart = {
       color: d3.scaleOrdinal().range(["#87de16"]),
     };
 
-    if ("undefined" !== typeof options) {
-      for (var i in options) {
-        if ("undefined" !== typeof options[i]) {
-          cfg[i] = options[i];
-        }
-      }
-    }
-
+    // Wat letiabelen voor de aankomende functies.
     allAxis = ["spicy", "dry", "sweet", "bitter", "sour"];
-    var total = allAxis.length;
-    var radius = cfg.factor * Math.min(cfg.w / 2, cfg.h / 2);
-    var Format = d3.format("%");
+    let total = allAxis.length;
+    let radius = cfg.factor * Math.min(cfg.w / 2, cfg.h / 2);
     d3.select(id).select("svg").remove();
 
-    var g = d3
+    let g = d3
       .select(id)
       .append("svg")
       .attr("width", cfg.w + cfg.ExtraWidthX)
@@ -198,16 +97,15 @@ var RadarChart = {
         "transform",
         "translate(" + cfg.TranslateX + "," + cfg.TranslateY + ")"
       );
-
-      g.append("g").attr("id", "poly");
-
-    //Circular segments
-    for (var j = 0; j < cfg.levels; j++) {
-      var levelFactor = cfg.factor * radius * ((j + 1) / cfg.levels);
+        
+    // Maakt de vijfhoeken aan en positioneert ze in elkaar.
+    for (let j = 0; j < cfg.levels; j++) {
+      let levelFactor = cfg.factor * radius * ((j + 1) / cfg.levels);
       g.selectAll(".levels")
         .data(allAxis)
         .enter()
         .append("svg:line")
+        // maakt 1 voor 1 de lijnen van de zeshoeken aan.
         .attr("x1", function (d, i) {
           return (
             levelFactor * (1 - cfg.factor * Math.sin((i * cfg.radians) / total))
@@ -245,13 +143,15 @@ var RadarChart = {
     }
     series = 0;
 
-    var axis = g
+    // Maakt groepen aan voor de axis lijnen
+    let axis = g
       .selectAll(".axis")
       .data(allAxis)
       .enter()
       .append("g")
       .attr("class", "axis");
 
+    //Maakt de axis lijnen aan.
     axis
       .append("line")
       .attr("x1", cfg.w / 2)
@@ -270,6 +170,7 @@ var RadarChart = {
       .style("stroke", "#5f8e0c")
       .style("stroke-width", "2px");
 
+    // Voegt de labels toe aan de chart.
     axis
       .append("text")
       .attr("class", "legend")
@@ -285,6 +186,7 @@ var RadarChart = {
       .attr("transform", function (d, i) {
         return "translate(0, -10)";
       })
+      // Positioneert de labels op de hoeken.
       .attr("x", function (d, i) {
         return (
           (cfg.w / 2) *
@@ -299,12 +201,16 @@ var RadarChart = {
         );
       });
 
+    // Laadt alle data in de chart.
     function loadData(berry, tooltip) {
+      // Delete huidige data in de chart.
       d3.selectAll(".poly").remove();
+      // Haalt de id op van de geselecteerde radiobutton.
       berry = document.querySelector('input[type="radio"]:checked').id;
       dataValues = [];
       potencyData = [];
       potencyData.push(d[berry].flavors);
+      // Loopt door de potencies heen en zet deze om naar coordinaten op de chart.
       potencyData.forEach(function (y, x) {
         g.selectAll(".nodes").data(y, (j, i) => {
           dataValues.push([
@@ -322,26 +228,29 @@ var RadarChart = {
         });
       });
 
+      // Gebruikt de coordinaten om de radar op de chart te zetten.
       g.selectAll(".area")
         .data([dataValues])
-        .join(
-          function (enter) {
-            return enter
+        .join(function (enter) {
+          return (
+            enter
               .append("polygon")
               .attr("class", "radar-chart-serie" + series + " poly")
               .style("stroke-width", "1.5px")
               .style("stroke", cfg.color(series))
               .attr("points", function (d) {
-                var str = "";
-                for (var pti = 0; pti < d.length; pti++) {
+                let str = "";
+                for (let pti = 0; pti < d.length; pti++) {
                   str = str + d[pti] + "," + d[pti] + " ";
                 }
                 return str;
               })
-              .style("fill", function (j, i) {
+              .style("fill", function (_, _) {
                 return cfg.color(series);
               })
               .style("fill-opacity", cfg.opacityArea)
+
+              // Animatie als je over de radar hovert.
               .on("mouseover", function (d) {
                 z = "polygon." + d3.select(this).attr("class");
                 g.selectAll("polygon")
@@ -353,20 +262,16 @@ var RadarChart = {
                 g.selectAll("polygon")
                   .transition(200)
                   .style("fill-opacity", cfg.opacityArea);
-              });
-          },
-          function(update) {
-            return update;
-          },
-          function(exit) {
-            return exit.remove();
-          }
-        );
-      series++;
+              })
+          );
+        });
 
       series = 0;
+
+      // Maakt cirkels aan per hoek om de potency te kunnen zien.
       tooltip = d3.select("body").append("div").attr("class", "toolTip");
       potencyData = [potencyData];
+      // Haalt weer de potency data op en en zet deze om naar coordinaten.
       potencyData[0].forEach(function (y, x) {
         g.selectAll(".nodes")
           .data(y)
@@ -411,6 +316,8 @@ var RadarChart = {
           .style("stroke-width", "1px")
           .style("stroke", cfg.color(series))
           .style("fill-opacity", 0)
+
+          // Hover reactie om de tooltip te kunnen zien.
           .on("mouseover", function (event, j) {
             tooltip
               .style("left", event.pageX - 40 + "px")
@@ -426,6 +333,7 @@ var RadarChart = {
       });
     }
 
+    // Laadt overige data in in de browser.
     function textData(berry) {
       berry = document.querySelector('input[type="radio"]:checked').id;
       document.querySelector("h1").innerHTML = d[berry].name;
@@ -436,6 +344,7 @@ var RadarChart = {
       document.getElementById("smoothness").innerHTML = d[berry].smoothness;
       document.getElementById("dryness").innerHTML = d[berry].soil_dryness;
     }
+    // Voegt event listeners toe aan de radiobuttons.
     const buttons = document.querySelectorAll("input");
     for (const button of buttons) {
       button.addEventListener("click", loadData);
